@@ -1,0 +1,354 @@
+{
+  "name": "Content Idea Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "download": false
+        }
+      },
+      "id": "d3816853-e9b8-4d53-a0b8-7b89cbeb4b85",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -1280,
+        -416
+      ],
+      "webhookId": "b91bc19e-e7cd-488a-a2bd-a338adfffad4",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ /^\\s*(\\/start|مرحبا|مرحباً|اهلا|أهلا|أهلاً|هلا|سلام|السلام|hi|hello|hey)\\s*$/i.test($json.message.text || \"\") }}",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "rightValue": "",
+                    "id": "3fbe3126-b082-4174-960d-7beedafa37e2"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "start"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text || \"\" }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "rightValue": "",
+                    "id": "1da03c1a-b755-436e-9f6d-2c73fb92fd10"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "unsupported"
+        }
+      },
+      "id": "4efee7c4-d735-4eb8-96f8-a8fbf024c546",
+      "name": "Route by Message Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -944,
+        -448
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "={{ $json.message.text ? 'أهلاً بك في مولد أفكار المحتوى 💡✨' : 'عذراً، أنا بفهم الرسائل النصية بس 🙏' }}\n\nاكتبلي اسم مجالك، وبعطيك 5 أفكار منشورات جاهزة للينكد إن أو إنستغرام.\n\nأمثلة:\n• تسويق\n• تصميم جرافيك\n• تحليل بيانات\n• برمجة للمبتدئين",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "7cbb9c6e-9b5b-4306-ad55-29c98d886ed9",
+      "name": "Send Help Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -592,
+        -288
+      ],
+      "webhookId": "6c9f39a7-1b11-4ea5-a7fc-e16e8513d2a2",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "⏳ لحظات، عم جهزلك 5 أفكار منشورات...",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "b147bbda-3180-4fe7-96f9-704dc1e2bccf",
+      "name": "Send Processing Notice",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -64
+      ],
+      "webhookId": "464582ae-8827-4943-885a-70d9750a24b5",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=مجال المستخدم أو طلبه:\n{{ $('Telegram Trigger').item.json.message.text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "instructions": "أنت خبير صناعة محتوى للسوشال ميديا، متخصص في لينكد إن وإنستغرام.\n\nالمستخدم سيكتب اسم مجاله (مثلاً: تسويق، تصميم، تحليل بيانات). مهمتك أن تعطيه 5 أفكار منشورات جاهزة للنشر في هذا المجال.\n\nلكل فكرة اكتب:\n**الفكرة 1: عنوان قصير وجذاب**\nالمنصة: لينكد إن أو إنستغرام (اختر الأنسب للفكرة)\nالنوع: مثلاً نصيحة، قصة شخصية، قائمة، سؤال للجمهور، كاروسيل، ريل\nالمنشور الجاهز: نص المنشور كاملاً جاهز للنسخ (افتتاحية تشد الانتباه، ثم المحتوى، ثم دعوة للتفاعل)\nالهاشتاقات: 3 إلى 5 هاشتاقات مناسبة\n\nقواعد:\n- اجعل الأفكار الخمس متنوعة وعملية ومحددة للمجال، وليست عامة.\n- اكتب بنفس لغة المستخدم: إذا كتب بالعربي اكتب بالعربي الفصيح المبسط، وإذا كتب بالإنجليزي اكتب بالإنجليزي.\n- إذا حدد المستخدم منصة أو عدداً أو نبرة معينة، التزم بطلبه.\n- إذا لم تكن الرسالة اسم مجال أو موضوع واضح (مثل كلام عشوائي)، اطلب منه بلطف أن يكتب اسم مجاله فقط، مع أمثلة.\n\nقواعد التنسيق (الرد سيُعرض في تيليجرام):\n- استخدم **نص** فقط لتغميق العناوين.\n- لا تستخدم علامة # للعناوين، ولا جداول.\n- افصل بين الأفكار بسطر فارغ.",
+          "maxTokens": 4000,
+          "temperature": 0.8
+        }
+      },
+      "id": "ed518990-9376-4727-9a69-de13c008c4e3",
+      "name": "Generate Content Ideas",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -480,
+        -320
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nlet raw = '';\nif (j.output && j.output[0] && j.output[0].content && j.output[0].content[0]) {\n  raw = j.output[0].content[0].text || '';\n} else {\n  raw = j.text || '';\n}\nif (!raw) raw = 'عذراً، لم أتمكن من تجهيز الرد. حاول مرة أخرى.';\n\nfunction formatLine(line) {\n  let s = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n  s = s.replace(/^#{1,6}\\s+(.+)$/, '**$1**');\n  s = s.replace(/\\*\\*(.+?)\\*\\*/g, '<b>$1</b>');\n  s = s.replace(/\\*\\*/g, '');\n  return s;\n}\n\nconst MAX = 3800;\nconst lines = raw.split('\\n');\nconst chunks = [];\nlet current = '';\nfor (const line of lines) {\n  const f = formatLine(line);\n  if (f.length > MAX) {\n    if (current) { chunks.push(current); current = ''; }\n    for (let i = 0; i < f.length; i += MAX) chunks.push(f.slice(i, i + MAX));\n    continue;\n  }\n  if ((current + '\\n' + f).length > MAX) {\n    chunks.push(current);\n    current = f;\n  } else {\n    current = current ? current + '\\n' + f : f;\n  }\n}\nif (current.trim()) chunks.push(current);\n\nreturn chunks.map((text, i) => ({ json: { text: text, part: i + 1, total: chunks.length } }));"
+      },
+      "id": "d45ed531-5552-4ff0-8bcd-0ef772e57ade",
+      "name": "Format & Split Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Telegram Trigger\").first().json.message.chat.id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "0c520fad-7f7b-4ab7-bcf0-a8ac0387a24a",
+      "name": "Send Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        368,
+        -192
+      ],
+      "webhookId": "03744a74-da21-4c7e-ac28-ce3544e636d5",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Telegram Trigger\").first().json.message.chat.id }}",
+        "text": "عذراً، صار خطأ أثناء تجهيز الأفكار 😔 حاول مرة ثانية بعد شوي.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "b3b4c162-f416-40ef-af0f-8db454742de4",
+      "name": "Send Error Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -112
+      ],
+      "webhookId": "c6f1b00b-2cec-4e0d-a3cd-51d9a774a343",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Route by Message Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Message Type": {
+      "main": [
+        [
+          {
+            "node": "Send Help Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Processing Notice",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Help Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Processing Notice": {
+      "main": [
+        [
+          {
+            "node": "Generate Content Ideas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Content Ideas": {
+      "main": [
+        [
+          {
+            "node": "Format & Split Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format & Split Reply": {
+      "main": [
+        [
+          {
+            "node": "Send Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "449eecac-7c00-4f3b-8185-aaa73b04d989",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b824517a6472ee1ebdf7e7428d01bdbee33c456063e5c3dd4e3e9ce64a07f3ad"
+  },
+  "nodeGroups": [
+    {
+      "id": "d36aa6f7-8644-4f8a-b760-a81092cd5539",
+      "name": "Generate post ideas",
+      "nodeIds": [
+        "b147bbda-3180-4fe7-96f9-704dc1e2bccf",
+        "ed518990-9376-4727-9a69-de13c008c4e3",
+        "d45ed531-5552-4ff0-8bcd-0ef772e57ade",
+        "0c520fad-7f7b-4ab7-bcf0-a8ac0387a24a",
+        "b3b4c162-f416-40ef-af0f-8db454742de4"
+      ],
+      "description": "Takes the field the user typed, writes 5 ready LinkedIn/Instagram posts, and replies in Telegram"
+    }
+  ],
+  "id": "gJrabuOoZVoqoPQt",
+  "tags": []
+}
