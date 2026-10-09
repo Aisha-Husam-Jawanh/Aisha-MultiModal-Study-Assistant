@@ -4,6 +4,13 @@ An intelligent, automated Telegram AI Bot designed to generate high-converting s
 
 ---
 
+## 📸 Demo & Interface
+<p align="center">
+  <img src="Screenshot%202026-10-09%20203147.png" alt="Bot Demo Screenshot" width="700" style="border-radius: 10px;">
+</p>
+
+---
+
 ## 🌟 Key Features
 - 💡 **Instant Idea Generation:** Provides creative hooks, post concepts, and strategy frameworks.
 - ⚡ **Ultra-Fast Responses:** Powered by **Groq LLaMA 3** high-speed inference engine.
@@ -21,15 +28,15 @@ An intelligent, automated Telegram AI Bot designed to generate high-converting s
 ---
 
 ## 🚀 How to Try the Bot
-You can interact with the live Telegram bot directly:
+You can interact with the live Telegram bot directly:  
 👉 **[Try Aisha Content Bot on Telegram](https://t.me/Aisha_Study_Bot)**
 
 ---
 
-## 📁 Repository Structure
-- `index.html` - Mobile-responsive portfolio page.
-- `Aisha_AI_Content_Bot_workflow.json` - Exported n8n workflow file.
-- `assets/` - Screenshots, workflow diagrams, and bot logo.
+## 📁 Repository Files
+- `Content Idea Generator.json` - Exported n8n workflow file.
+- `Screenshot 2026-10-09 203147.png` - Live demonstration screenshot.
+- `README.md` - Project documentation.
 
 ---
 
