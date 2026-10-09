@@ -1,0 +1,722 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "d3816853-e9b8-4d53-a0b8-7b89cbeb4b85",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -1088,
+        -16
+      ],
+      "webhookId": "5d417a13-33b3-4e6d-83e9-323740d82a88",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text || \"\" }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    },
+                    "rightValue": "/start",
+                    "id": "3fbe3126-b082-4174-960d-7beedafa37e2"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "start"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.document ? $json.message.document.mime_type : \"\" }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "application/pdf",
+                    "id": "c7aa4a92-056f-4c58-a5ae-d3edd3471871"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ !!$json.message.photo }}",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "rightValue": "",
+                    "id": "db33e6f2-a1f0-4861-ade5-4d83941891f4"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "photo"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ !!($json.message.voice || $json.message.audio) }}",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "rightValue": "",
+                    "id": "cd9ccd0f-01d3-4ff0-b323-943a8c38be2c"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "voice"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text || \"\" }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "rightValue": "",
+                    "id": "1da03c1a-b755-436e-9f6d-2c73fb92fd10"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "unsupported"
+        }
+      },
+      "id": "4efee7c4-d735-4eb8-96f8-a8fbf024c546",
+      "name": "Route by Message Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -816,
+        -176
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "={{ ($json.message.text || '').startsWith('/start') ? 'أهلاً بك في مساعدك الدراسي الذكي 📚✨' : 'عذراً، هذا النوع من الرسائل غير مدعوم حالياً 🙏' }}\n\nأرسل لي أي من التالي وسأجهز لك ملخصاً شاملاً مع أسئلة مراجعة:\n📄 ملف PDF للدرس\n🖼️ صورة لصفحة من الكتاب أو الدفتر\n🎙️ رسالة صوتية تشرح فيها الدرس\n✍️ نص الدرس مباشرة\n\n💡 تقدر تكتب طلبك مع الملف (في التعليق)، مثلاً:\n\"بدي 5 أسئلة مقالية\" أو \"15 سؤال اختيار من متعدد\"\n\nوإذا ما حددت، رح أعملك 10 أسئلة اختيار من متعدد تلقائياً.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "7cbb9c6e-9b5b-4306-ad55-29c98d886ed9",
+      "name": "Send Help Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        -192
+      ],
+      "webhookId": "c06b62d7-b6d4-4eb3-a2e2-b3b550553f54",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.document.file_id }}",
+        "additionalFields": {}
+      },
+      "id": "dd1fff2e-d587-4b6b-aa0e-808170fba307",
+      "name": "Get PDF File",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        -432
+      ],
+      "webhookId": "501b6d25-cf0e-4b2f-94dc-8bd680002ea2",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "id": "15af7e05-ba9e-4c69-9ef0-827cdd36b45f",
+      "name": "Extract PDF Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -240,
+        -416
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "lesson",
+              "name": "lessonContent",
+              "type": "string",
+              "value": "={{ $json.text || $json.content || ($json.output && $json.output[0] && $json.output[0].content ? $json.output[0].content[0].text : \"\") || ($json.message && $json.message.text) || \"\" }}"
+            },
+            {
+              "id": "request",
+              "name": "userRequest",
+              "type": "string",
+              "value": "={{ $(\"Telegram Trigger\").item.json.message.caption || \"\" }}"
+            },
+            {
+              "id": "chat",
+              "name": "chatId",
+              "type": "string",
+              "value": "={{ $(\"Telegram Trigger\").item.json.message.chat.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0cc72ae0-1994-4b53-a0c0-689094461c5c",
+      "name": "Prepare Lesson Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        256,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.photo[$json.message.photo.length - 1].file_id }}",
+        "additionalFields": {}
+      },
+      "id": "97403a77-d441-4b7d-8439-944ba83e7241",
+      "name": "Get Photo File",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        96
+      ],
+      "webhookId": "73e36dc4-c48f-4b77-b97d-09683f022efc",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "gpt-4o-mini"
+        },
+        "text": "استخرج كل النص الموجود في هذه الصورة كما هو بدقة، مع المحافظة على ترتيب الفقرات والعناوين. إذا احتوت الصورة على رسومات أو جداول أو معادلات، صفها بوضوح. لا تضف أي تعليق من عندك.",
+        "inputType": "base64",
+        "options": {
+          "detail": "high",
+          "maxTokens": 3000
+        }
+      },
+      "id": "a18a2844-97ea-443c-a329-17f56f363e7c",
+      "name": "Read Text from Photo",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -96,
+        192
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ ($json.message.voice || $json.message.audio).file_id }}",
+        "additionalFields": {}
+      },
+      "id": "bc8b147c-9b01-4e1e-88e5-a3dfe6187fbc",
+      "name": "Get Voice File",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -336,
+        544
+      ],
+      "webhookId": "3a7f4a6d-031f-4220-bbf3-07f00a3a2365",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {
+          "language": "ar"
+        }
+      },
+      "id": "ad785b70-ed01-4b22-a56f-769649a117bd",
+      "name": "Transcribe Voice",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -112,
+        640
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "⏳ استلمت الدرس، جاري تجهيز الملخص والأسئلة... لحظات من فضلك.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "b147bbda-3180-4fe7-96f9-704dc1e2bccf",
+      "name": "Send Processing Notice",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        464,
+        -256
+      ],
+      "webhookId": "c141ba8e-20a2-400d-874d-90d129b54e28",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=طلب الطالب الخاص (إن وجد):\n{{ $('Prepare Lesson Content').item.json.userRequest || 'لا يوجد طلب خاص' }}\n\nمحتوى الدرس:\n{{ $('Prepare Lesson Content').item.json.lessonContent }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "instructions": "أنت معلّم ومساعد دراسي ذكي، متخصص في تقديم شروحات وافية وملخصات مخصصة باللغة العربية.\n\nالمهام المطلوبة منك:\n1. التلخيص الشامل والشرح التفصيلي:\n   - اقرأ محتوى الدرس كاملاً ودقق في كل تفصيلة.\n   - قدم ملخصاً شاملاً لا يتخطى أي جزئية، مع شرح المفاهيم بأسلوب وافٍ ومبسط.\n   - ابدأ بعنوان رئيسي للدرس، ثم عناوين فرعية واضحة، ونقاط منظمة، وإيموجيز مناسبة.\n\n2. الأسئلة والمراجعة:\n   - إذا طلب الطالب نوعاً أو عدداً معيناً من الأسئلة، التزم بطلبه تماماً.\n   - إذا لم يحدد، أنشئ تلقائياً 10 أسئلة اختيار من متعدد (أ، ب، ج، د) تغطي كل أجزاء الدرس.\n   - ضع قسم \"الإجابات النموذجية\" في النهاية مع شرح مختصر لسبب كل إجابة.\n\n3. إذا كانت الرسالة سؤالاً أو استفساراً وليست درساً، أجب عليها بشرح واضح ومبسط بدون أسئلة مراجعة.\n\nقواعد التنسيق (مهمة جداً لأن الرد سيُعرض في تيليجرام):\n   - استخدم **نص** فقط لتغميق العناوين والكلمات المهمة.\n   - لا تستخدم علامة # للعناوين، ولا جداول، ولا أكواد.\n   - افصل بين الأقسام بسطر فارغ.",
+          "maxTokens": 8000,
+          "temperature": 0.4
+        }
+      },
+      "id": "ed518990-9376-4727-9a69-de13c008c4e3",
+      "name": "Generate Summary & Quiz",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        144,
+        -512
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "Gateway credits",
+          "__aiGatewayManaged": true
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Prepare Lesson Content\").first().json.chatId }}",
+        "text": "عذراً، صار خطأ أثناء تجهيز الملخص 😔 حاول مرة أخرى بعد قليل، أو أرسل الدرس بصيغة أخرى.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "b3b4c162-f416-40ef-af0f-8db454742de4",
+      "name": "Send Error Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        704,
+        -304
+      ],
+      "webhookId": "3173a750-e02b-404c-b610-66a2496fe683",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nlet raw = '';\nif (j.output && j.output[0] && j.output[0].content && j.output[0].content[0]) {\n  raw = j.output[0].content[0].text || '';\n} else {\n  raw = j.text || '';\n}\nif (!raw) raw = 'عذراً، لم أتمكن من تجهيز الرد. حاول مرة أخرى.';\n\nfunction formatLine(line) {\n  let s = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n  s = s.replace(/^#{1,6}\\s*(.+)$/, '**$1**');\n  s = s.replace(/\\*\\*(.+?)\\*\\*/g, '<b>$1</b>');\n  s = s.replace(/\\*\\*/g, '');\n  return s;\n}\n\nconst MAX = 3800;\nconst lines = raw.split('\\n');\nconst chunks = [];\nlet current = '';\nfor (const line of lines) {\n  const f = formatLine(line);\n  if (f.length > MAX) {\n    if (current) { chunks.push(current); current = ''; }\n    for (let i = 0; i < f.length; i += MAX) chunks.push(f.slice(i, i + MAX));\n    continue;\n  }\n  if ((current + '\\n' + f).length > MAX) {\n    chunks.push(current);\n    current = f;\n  } else {\n    current = current ? current + '\\n' + f : f;\n  }\n}\nif (current.trim()) chunks.push(current);\n\nreturn chunks.map((text, i) => ({ json: { text: text, part: i + 1, total: chunks.length } }));"
+      },
+      "id": "d45ed531-5552-4ff0-8bcd-0ef772e57ade",
+      "name": "Format & Split Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        -496
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Prepare Lesson Content\").first().json.chatId }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "0c520fad-7f7b-4ab7-bcf0-a8ac0387a24a",
+      "name": "Send Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        992,
+        -384
+      ],
+      "webhookId": "65caa277-ad61-4f1f-9912-862e99dd5708",
+      "credentials": {
+        "telegramApi": {
+          "id": "ISZJPl2knHiZ866Y",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Route by Message Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Message Type": {
+      "main": [
+        [
+          {
+            "node": "Send Help Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get PDF File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Photo File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Voice File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Lesson Content",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Help Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get PDF File": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Text": {
+      "main": [
+        [
+          {
+            "node": "Prepare Lesson Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Lesson Content": {
+      "main": [
+        [
+          {
+            "node": "Send Processing Notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Photo File": {
+      "main": [
+        [
+          {
+            "node": "Read Text from Photo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Text from Photo": {
+      "main": [
+        [
+          {
+            "node": "Prepare Lesson Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Voice File": {
+      "main": [
+        [
+          {
+            "node": "Transcribe Voice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe Voice": {
+      "main": [
+        [
+          {
+            "node": "Prepare Lesson Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Processing Notice": {
+      "main": [
+        [
+          {
+            "node": "Generate Summary & Quiz",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Summary & Quiz": {
+      "main": [
+        [
+          {
+            "node": "Format & Split Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format & Split Reply": {
+      "main": [
+        [
+          {
+            "node": "Send Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "2fe94e04-7ae1-4cd4-abd2-4bc3ec5523b3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b824517a6472ee1ebdf7e7428d01bdbee33c456063e5c3dd4e3e9ce64a07f3ad"
+  },
+  "nodeGroups": [
+    {
+      "id": "54ac1eb9-d01f-401c-9966-8d8aecebe105",
+      "name": "Read PDF lesson",
+      "nodeIds": [
+        "dd1fff2e-d587-4b6b-aa0e-808170fba307",
+        "15af7e05-ba9e-4c69-9ef0-827cdd36b45f"
+      ],
+      "description": "Downloads the PDF the student sent and pulls out its full text"
+    },
+    {
+      "id": "790d1845-1f49-4620-a24c-09004786f252",
+      "name": "Read photo lesson",
+      "nodeIds": [
+        "97403a77-d441-4b7d-8439-944ba83e7241",
+        "a18a2844-97ea-443c-a329-17f56f363e7c"
+      ],
+      "description": "Downloads the photo of a book or notes page and reads all text from it"
+    },
+    {
+      "id": "47b94e2b-06a0-4a09-a7d6-f865530bdc50",
+      "name": "Read voice lesson",
+      "nodeIds": [
+        "bc8b147c-9b01-4e1e-88e5-a3dfe6187fbc",
+        "ad785b70-ed01-4b22-a56f-769649a117bd"
+      ],
+      "description": "Downloads the voice note and turns the spoken Arabic explanation into text"
+    },
+    {
+      "id": "557b0684-2ce5-4521-a0e3-bba76c777fef",
+      "name": "Generate study material",
+      "nodeIds": [
+        "0cc72ae0-1994-4b53-a0c0-689094461c5c",
+        "b147bbda-3180-4fe7-96f9-704dc1e2bccf",
+        "ed518990-9376-4727-9a69-de13c008c4e3",
+        "d45ed531-5552-4ff0-8bcd-0ef772e57ade",
+        "0c520fad-7f7b-4ab7-bcf0-a8ac0387a24a",
+        "b3b4c162-f416-40ef-af0f-8db454742de4"
+      ],
+      "description": "Builds the summary and review questions, then replies in Telegram in parts under the message limit"
+    }
+  ],
+  "id": "gJrabuOoZVoqoPQt",
+  "tags": []
+}
