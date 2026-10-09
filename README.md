@@ -43,4 +43,4 @@ You can interact with the live Telegram bot directly:
 ## 👩‍💻 Author
 **Aisha Jawanh**  
 Data Science & AI Engineering Student  
-🔗 [LinkedIn Profile](https://www.linkedin.com/in/aisha-jawanh-34a497409) | 🌐 [Portfolio](https://aisha-husam-jawanh.github.io)
+🔗 [LinkedIn Profile](https://www.linkedin.com/in/aisha-jawanh-34a497409) | 🌐 [Portfolio Website](https://aisha-husam-jawanh.github.io/Aisha-portfolio/)
