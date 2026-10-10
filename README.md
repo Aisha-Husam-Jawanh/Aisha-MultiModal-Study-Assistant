@@ -6,7 +6,7 @@ An intelligent, automated Telegram AI Bot designed to generate high-converting s
 
 ## 📸 Demo & Interface
 <p align="center">
-  <img src="[Screenshot%202026-10-09%20203147.png]" alt="Bot Demo Screenshot" width="700" style="border-radius: 10px;">
+  <img src="Screenshot 2026-10-10 185523" alt="Bot Demo Screenshot" width="700" style="border-radius: 10px;">
 </p>
 
 ---
