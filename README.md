@@ -5,8 +5,15 @@ An intelligent, automated Telegram AI Bot designed to generate high-converting s
 ---
 
 ## 📸 Demo & Interface
+
 <p align="center">
-  <img src="Screenshot%202026-10-10%20185523.png" alt="Bot Demo Screenshot" width="700" style="border-radius: 10px;">
+  <img src="Screenshot%202026-10-10%20185523.png" alt="Bot Demo Screenshot" width="700" style="border-radius: 10px; margin-bottom: 15px;">
+</p>
+
+<p align="center">
+  <img src="IMG_4493.PNG" alt="Bot Preview 1" width="30%" style="border-radius: 8px;">
+  <img src="IMG_4534.PNG" alt="Bot Preview 2" width="30%" style="border-radius: 8px;">
+  <img src="IMG_4535.PNG" alt="Bot Preview 3" width="30%" style="border-radius: 8px;">
 </p>
 
 ---
@@ -35,7 +42,8 @@ You can interact with the live Telegram bot directly:
 
 ## 📁 Repository Files
 - `Content Idea Generator.json` - Exported n8n workflow file.
-- `Screenshot 2026-10-09 203147.png` - Live demonstration screenshot.
+- `Screenshot 2026-10-10 185523.png` - Live demonstration screenshot.
+- `IMG_4493.PNG`, `IMG_4534.PNG`, `IMG_4535.PNG` - Mobile interface screenshots.
 - `README.md` - Project documentation.
 
 ---
